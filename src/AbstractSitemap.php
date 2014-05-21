@@ -134,10 +134,11 @@ abstract class AbstractSitemap
     /**
      * Adds a URL to the document with the given array of elements.
      * @param  array $urlArray
+     * @param  array $hreflang
      * @return $this
      * @throws MaxUrlCountExceededException
      */
-    protected function addUrlToDocument(array $urlArray)
+    protected function addUrlToDocument(array $urlArray, array $hreflang = null)
     {
         if ($this->hasMaxUrlCount()) {
             throw new MaxUrlCountExceededException('Maximum number of URLs has been reached, cannot add more.');
@@ -150,6 +151,15 @@ abstract class AbstractSitemap
                 continue;
             }
             $node->appendChild(new DOMElement($key, $value));
+        }
+        if (!is_null($hreflang)) {
+            foreach ($hreflang as $lang => $href) {
+                $link = $this->document->createElement('xhtml:link');
+                $link->setAttribute('rel', 'alternate');
+                $link->setAttribute('hreflang', $lang);
+                $link->setAttribute('href', $href);
+                $node->appendChild($link);
+            }
         }
         $this->rootNode->appendChild($node);
         $this->urlCount++;

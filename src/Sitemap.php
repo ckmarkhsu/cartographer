@@ -15,6 +15,12 @@ class ChangeFrequency
 
 class Sitemap extends AbstractSitemap
 {
+    public function __construct()
+    {
+        parent::__construct();
+        $this->rootNode->setAttributeNS('http://www.w3.org/2000/xmlns/' ,'xmlns:xhtml', 'http://www.w3.org/1999/xhtml');
+    }
+
     protected function getRootNodeName()
     {
         return 'urlset';
@@ -31,13 +37,14 @@ class Sitemap extends AbstractSitemap
      * @param  string|int $lastmod
      * @param  string     $changefreq
      * @param  float      $priority
+     * @param  array      $hreflang
      * @return $this
      */
-    public function add($loc, $lastmod = null, $changefreq = null, $priority = null)
+    public function add($loc, $lastmod = null, $changefreq = null, $priority = null, $hreflang = null)
     {
         $loc     = $this->escapeString($loc);
         $lastmod = !is_null($lastmod) ? $this->formatDate($lastmod) : null;
 
-        return $this->addUrlToDocument(compact('loc', 'lastmod', 'changefreq', 'priority'));
+        return $this->addUrlToDocument(compact('loc', 'lastmod', 'changefreq', 'priority'), $hreflang);
     }
 }
